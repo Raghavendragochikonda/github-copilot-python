@@ -5,14 +5,40 @@
   <title>Sudoku Game</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
-<body>
+<body data-theme="light">
   <h1>Sudoku Game</h1>
+  
+  <div class="difficulty-selector">
+    <label for="difficulty">Difficulty:</label>
+    <select id="difficulty">
+      <option value="easy">Easy (45 clues)</option>
+      <option value="medium" selected>Medium (35 clues)</option>
+      <option value="hard">Hard (25 clues)</option>
+    </select>
+  </div>
+  
+  <div class="timer-display">
+    <span class="timer-label">Time:</span>
+    <span id="timer">00:00</span>
+  </div>
+  
   <div id="sudoku-board"></div>
   <div class="controls">
     <button id="new-game">New Game</button>
     <button id="check-solution">Check Solution</button>
+    <button id="hint">Hint</button>
+    <button id="theme-toggle" class="secondary-button" type="button" aria-label="Toggle dark mode">Dark Mode</button>
     <span id="message"></span>
   </div>
+
+  <div class="leaderboard-panel">
+    <div class="leaderboard-header">
+      <h2>Top 10 Leaderboard</h2>
+      <button id="clear-leaderboard" class="secondary-button">Clear Leaderboard</button>
+    </div>
+    <ol id="leaderboard-list" class="leaderboard-list"></ol>
+  </div>
+
   <script src="/static/main.js"></script>
 </body>
 </html>

@@ -1,57 +1,95 @@
-import copy
-import random
+"""
+Sudoku Logic - Backward Compatibility Facade
 
-SIZE = 9
-EMPTY = 0
+This module maintains backward compatibility by re-exporting all functions
+from the modular sub-components:
+  - board: Board creation and utilities
+  - validator: Sudoku rules and validation
+  - puzzle_generator: Puzzle generation
+  - solver: Puzzle solving
 
-def deep_copy(board):
-    return copy.deepcopy(board)
+LEGACY USAGE (still works):
+    import sudoku_logic
+    puzzle, solution = sudoku_logic.generate_puzzle(35)
 
-def create_empty_board():
-    return [[EMPTY for _ in range(SIZE)] for _ in range(SIZE)]
+MODERN USAGE (recommended):
+    from puzzle_generator import generate_puzzle
+    from validator import is_safe
+    from solver import solve
+    puzzle, solution = generate_puzzle(35)
+"""
 
-def is_safe(board, row, col, num):
-    # Check row and column
-    for x in range(SIZE):
-        if board[row][x] == num or board[x][col] == num:
-            return False
-    # Check 3x3 box
-    start_row = row - row % 3
-    start_col = col - col % 3
-    for i in range(3):
-        for j in range(3):
-            if board[start_row + i][start_col + j] == num:
-                return False
-    return True
+# Re-export from board module
+from board import (
+    SIZE,
+    EMPTY,
+    BOX_SIZE,
+    create_empty_board,
+    deep_copy,
+    print_board
+)
 
-def fill_board(board):
-    for row in range(SIZE):
-        for col in range(SIZE):
-            if board[row][col] == EMPTY:
-                possible = list(range(1, SIZE + 1))
-                random.shuffle(possible)
-                for candidate in possible:
-                    if is_safe(board, row, col, candidate):
-                        board[row][col] = candidate
-                        if fill_board(board):
-                            return True
-                        board[row][col] = EMPTY
-                return False
-    return True
+# Re-export from validator module
+from validator import (
+    is_safe,
+    is_valid_move,
+    find_conflicting_cells,
+    compare_boards,
+    is_board_complete,
+    is_solution_valid
+)
 
-def remove_cells(board, clues):
-    attempts = SIZE * SIZE - clues
-    while attempts > 0:
-        row = random.randrange(SIZE)
-        col = random.randrange(SIZE)
-        if board[row][col] != EMPTY:
-            board[row][col] = EMPTY
-            attempts -= 1
+# Re-export from puzzle_generator module
+from puzzle_generator import (
+    fill_complete_board,
+    remove_clues,
+    generate_puzzle,
+    generate_puzzle_batch,
+    count_solutions
+)
 
-def generate_puzzle(clues=35):
-    board = create_empty_board()
-    fill_board(board)
-    solution = deep_copy(board)
-    remove_cells(board, clues)
-    puzzle = deep_copy(board)
-    return puzzle, solution
+# Re-export from solver module (NEW functionality)
+from solver import (
+    solve,
+    solve_copy,
+    has_unique_solution,
+    get_hint,
+    find_empty_cell
+)
+
+# Aliases for backward compatibility with old naming
+fill_board = fill_complete_board  # Old name -> new name
+remove_cells = remove_clues  # Old name -> new name
+
+__all__ = [
+    # Constants
+    'SIZE',
+    'EMPTY',
+    'BOX_SIZE',
+    # Board utilities
+    'create_empty_board',
+    'deep_copy',
+    'print_board',
+    # Validation
+    'is_safe',
+    'is_valid_move',
+    'find_conflicting_cells',
+    'compare_boards',
+    'is_board_complete',
+    'is_solution_valid',
+    # Puzzle generation
+    'generate_puzzle',
+    'fill_complete_board',
+    'remove_clues',
+    'generate_puzzle_batch',
+    # Backward compatibility aliases
+    'fill_board',
+    'remove_cells',
+    # Solving
+    'solve',
+    'solve_copy',
+    'count_solutions',
+    'has_unique_solution',
+    'get_hint',
+    'find_empty_cell',
+]
